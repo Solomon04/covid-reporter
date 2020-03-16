@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-  <a href="https://github.com/laravel-zero/framework/actions"><img src="https://img.shields.io/github/workflow/status/laravel-zero/framework/Continuous%20Integration.svg" alt="Build Status"></img></a>
+  <img src="https://circleci.com/gh/Solomon04/covid-reporter.svg" alt="Build Status"></img>
 </p>
 
 ## Description
