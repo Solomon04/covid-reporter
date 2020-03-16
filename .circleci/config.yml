@@ -1,0 +1,62 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # Specify the version you desire here
+      - image: circleci/php:7.4.0-apache-buster
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # Using the RAM variation mitigates I/O contention
+      # for database intensive operations.
+      # - image: circleci/mysql:5.7-ram
+      #
+      # - image: redis:2.8.19
+    steps:
+      - checkout
+
+      - run: sudo apt update && sudo apt install zlib1g-dev libsqlite3-dev libpng-dev redis-server
+      - run: sudo docker-php-ext-install zip mysqli pdo_mysql pdo_sqlite bcmath exif
+      - run: sudo docker-php-ext-install -j$(nproc) gd
+      - run: sudo service redis-server start
+
+      # Download and cache dependencies
+
+      # composer cache
+      - restore_cache:
+          keys:
+            # "composer.lock" can be used if it is committed to the repo
+            - composer-v1-{{ checksum "composer.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - composer-v1-
+
+      - run: composer install -n --prefer-dist
+
+      - save_cache:
+          key: composer-v1-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
+
+      # prepare env
+      - run: cp .env.testing .env
+
+      # run tests with phpunit or codecept
+      - run: ./vendor/bin/phpunit
+
+      # static code analysis
+      - run: ./vendor/bin/phpstan analyse
+
+      - store_test_results:
+          path: tests/_output
+      - store_artifacts:
+          path: tests/_output
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
