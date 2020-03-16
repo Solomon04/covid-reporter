@@ -11,6 +11,9 @@ This application utilizes the terminal to report COVID cases within a given area
 
 This application was build with [Laravel Zero](https://laravel-zero.com).
 
+## How To Use It
+Run `php covid report` in your terminal. 
+
 ## Example 
 ![Alt text](example.png "Optional Title")
 
