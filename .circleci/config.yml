@@ -42,8 +42,6 @@ jobs:
           paths:
             - vendor
 
-      # prepare env
-      - run: cp .env.testing .env
 
       # run tests with phpunit or codecept
       - run: ./vendor/bin/phpunit
